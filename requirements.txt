@@ -11,3 +11,5 @@ nbclient
 ipykernel
 reportlab
 pillow
+python-docx
+python-pptx
