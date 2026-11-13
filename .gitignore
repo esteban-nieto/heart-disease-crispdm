@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Derivados regenerables (se recrean con los scripts)
+data/heart_disease.db
+
+
+# Sistema
+Thumbs.db
+.DS_Store
+.idea/

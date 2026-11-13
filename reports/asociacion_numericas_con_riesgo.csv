@@ -1,0 +1,8 @@
+﻿variable;media_sin_evento;media_con_evento;diferencia_std;p_valor
+BMI;28,59;29,48;0,1312;2,29072e-127
+MentHlth;3,37;4,7;0,1734;9,25713e-19
+PhysHlth;4,15;9,22;0,5603;0
+GenHlth;2,51;3,37;0,8099;0
+Age;7,85;10,13;0,735;0
+Education;5,01;4,74;-0,2711;4,31877e-308
+Income;5,98;5,13;-0,404;0

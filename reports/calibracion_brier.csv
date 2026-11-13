@@ -1,0 +1,3 @@
+﻿modelo;brier;prevalencia_media_predicha;prevalencia_observada
+Regresión logística;0,1709;0,3643;0,1032
+Random Forest;0,1654;0,3623;0,1032

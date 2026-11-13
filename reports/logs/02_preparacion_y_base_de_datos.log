@@ -1,0 +1,18 @@
+Validación: OK
+Filas originales: 253680  |  sin duplicados: 229781
+
+BD creada en F:\Esteban\Alejandro Pedreros\heart-disease-crispdm\data\heart_disease.db con 229781 filas en 'encuestados'.
+ grupo_edad_brfss  tasa_evento     n
+              1.0       0.0053  5512
+              2.0       0.0076  7068
+              3.0       0.0126 10025
+              4.0       0.0158 12234
+              5.0       0.0250 14050
+              6.0       0.0411 17299
+              7.0       0.0615 23140
+              8.0       0.0823 27301
+              9.0       0.1125 29736
+             10.0       0.1418 29168
+             11.0       0.1768 22041
+             12.0       0.1998 15394
+             13.0       0.2455 16813

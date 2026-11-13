@@ -1,0 +1,5 @@
+﻿modelo;roc_auc;pr_auc;precision_umbral_0.5;recall_umbral_0.5;f1_umbral_0.5
+Línea base (mayoritaria);0,5;0,1032;0;0;0
+Regresión logística;0,8355;0,3725;0,2524;0,7782;0,3811
+Random Forest;0,8369;0,3714;0,2489;0,7944;0,3791
+Gradient boosting;0,8383;0,3767;0,2455;0,8014;0,3759

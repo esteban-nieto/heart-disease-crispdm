@@ -1,0 +1,20 @@
+Modelos reajustados.
+             modelo metrica  valor  ic95_inferior  ic95_superior
+Regresión logística ROC-AUC 0.8355         0.8300         0.8407
+Regresión logística  PR-AUC 0.3725         0.3597         0.3873
+      Random Forest ROC-AUC 0.8369         0.8314         0.8420
+      Random Forest  PR-AUC 0.3714         0.3575         0.3857
+             modelo                                grupo     n  prevalencia  roc_auc  recall  precision
+Regresión logística                     Sexo: hombre (1) 20239       0.1336   0.8220  0.8321     0.2680
+Regresión logística                      Sexo: mujer (0) 25718       0.0793   0.8366  0.7067     0.2313
+Regresión logística Edad: 65 años o más (código 10 a 13) 16620       0.1841   0.7552  0.8719     0.2649
+Regresión logística   Edad: menores de 65 (código 1 a 9) 29337       0.0574   0.8479  0.6081     0.2247
+      Random Forest                     Sexo: hombre (1) 20239       0.1336   0.8238  0.8421     0.2695
+      Random Forest                      Sexo: mujer (0) 25718       0.0793   0.8376  0.7312     0.2229
+      Random Forest Edad: 65 años o más (código 10 a 13) 16620       0.1841   0.7574  0.8807     0.2638
+      Random Forest   Edad: menores de 65 (código 1 a 9) 29337       0.0574   0.8499  0.6378     0.2180
+             modelo  brier  prevalencia_media_predicha  prevalencia_observada
+Regresión logística 0.1709                      0.3643                 0.1032
+      Random Forest 0.1654                      0.3623                 0.1032
+Figura guardada: 09_calibracion.png
+exit=0

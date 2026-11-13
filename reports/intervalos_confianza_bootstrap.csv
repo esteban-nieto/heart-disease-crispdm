@@ -1,0 +1,5 @@
+﻿modelo;metrica;valor;ic95_inferior;ic95_superior
+Regresión logística;ROC-AUC;0,8355;0,83;0,8407
+Regresión logística;PR-AUC;0,3725;0,3597;0,3873
+Random Forest;ROC-AUC;0,8369;0,8314;0,842
+Random Forest;PR-AUC;0,3714;0,3575;0,3857

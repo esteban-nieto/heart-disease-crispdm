@@ -1,0 +1,9 @@
+﻿modelo;grupo;n;prevalencia;roc_auc;recall;precision
+Regresión logística;Sexo: hombre (1);20239;0,1336;0,822;0,8321;0,268
+Regresión logística;Sexo: mujer (0);25718;0,0793;0,8366;0,7067;0,2313
+Regresión logística;Edad: 65 años o más (código 10 a 13);16620;0,1841;0,7552;0,8719;0,2649
+Regresión logística;Edad: menores de 65 (código 1 a 9);29337;0,0574;0,8479;0,6081;0,2247
+Random Forest;Sexo: hombre (1);20239;0,1336;0,8238;0,8421;0,2695
+Random Forest;Sexo: mujer (0);25718;0,0793;0,8376;0,7312;0,2229
+Random Forest;Edad: 65 años o más (código 10 a 13);16620;0,1841;0,7574;0,8807;0,2638
+Random Forest;Edad: menores de 65 (código 1 a 9);29337;0,0574;0,8499;0,6378;0,218

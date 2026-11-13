@@ -1,0 +1,48 @@
+=== FASE 1: COMPRENSIÓN DEL NEGOCIO ===
+Objetivo: identificar factores de salud y hábitos asociados a infarto o enfermedad cardiaca (HeartDiseaseorAttack) y estimar la probabilidad de que una persona la presente, para apoyar la prevención.
+Fuente: encuesta BRFSS 2015 (CDC, EE. UU.), datos autoreportados.
+
+=== FASE 2: COMPRENSIÓN DE LOS DATOS ===
+Filas x columnas: (253680, 22)
+Nulos totales: 0
+Duplicados: 23899
+
+Balance del target (con duplicados):
+HeartDiseaseorAttack
+0.0    0.9058
+1.0    0.0942
+
+Filas tras eliminar duplicados: 229781
+Balance del target (sin duplicados):
+HeartDiseaseorAttack
+0.0    0.8968
+1.0    0.1032
+
+Asociación numéricas vs target:
+ variable  media_sin_evento  media_con_evento  diferencia_std       p_valor
+      BMI             28.59             29.48          0.1312 2.290721e-127
+ MentHlth              3.37              4.70          0.1734  9.257134e-19
+ PhysHlth              4.15              9.22          0.5603  0.000000e+00
+  GenHlth              2.51              3.37          0.8099  0.000000e+00
+      Age              7.85             10.13          0.7350  0.000000e+00
+Education              5.01              4.74         -0.2711 4.318775e-308
+   Income              5.98              5.13         -0.4040  0.000000e+00
+
+Asociación binarias vs target:
+         variable                 tasa_evento_por_nivel       p_valor
+           HighBP            {0.0: 0.0473, 1.0: 0.1703}  0.000000e+00
+         HighChol            {0.0: 0.0555, 1.0: 0.1635}  0.000000e+00
+        CholCheck            {0.0: 0.0291, 1.0: 0.1063} 9.657383e-127
+           Smoker            {0.0: 0.0734, 1.0: 0.1375}  0.000000e+00
+           Stroke            {0.0: 0.0901, 1.0: 0.3827}  0.000000e+00
+         Diabetes {0.0: 0.08, 1.0: 0.1434, 2.0: 0.2238}  0.000000e+00
+     PhysActivity            {0.0: 0.1402, 1.0: 0.0898} 4.245886e-270
+           Fruits            {0.0: 0.1059, 1.0: 0.1015}  6.498080e-04
+          Veggies             {0.0: 0.1196, 1.0: 0.099}  3.634329e-39
+HvyAlcoholConsump             {0.0: 0.106, 1.0: 0.0608}  1.147611e-64
+    AnyHealthcare            {0.0: 0.0702, 1.0: 0.1051}  2.632328e-35
+      NoDocbcCost            {0.0: 0.1011, 1.0: 0.1242}  4.078150e-26
+         DiffWalk            {0.0: 0.0738, 1.0: 0.2325}  0.000000e+00
+              Sex            {0.0: 0.0791, 1.0: 0.1341}  0.000000e+00
+
+Figuras guardadas en reports/figures/
