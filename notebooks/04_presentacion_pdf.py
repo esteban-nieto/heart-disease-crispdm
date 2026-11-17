@@ -29,7 +29,6 @@ texto = ParagraphStyle("x", parent=estilos["BodyText"], fontSize=12, leading=16)
 pequeno = ParagraphStyle("p", parent=estilos["BodyText"], fontSize=9, leading=11,
                          textColor=colors.HexColor("#555555"))
 
-
 def tabla(df):
     datos = [list(df.columns)] + df.astype(str).values.tolist()
     t = Table(datos, hAlign="LEFT")
@@ -43,7 +42,6 @@ def tabla(df):
     ]))
     return t
 
-
 def imagen(ruta, ancho_cm=20, alto_max_cm=15.5):
     """Escala la imagen para que quepa en la página horizontal (ancho y alto)."""
     from PIL import Image as PILImage
@@ -56,11 +54,9 @@ def imagen(ruta, ancho_cm=20, alto_max_cm=15.5):
         ancho = alto * w / h
     return Image(str(ruta), width=ancho, height=alto)
 
-
 def pagina_figura(titulo_txt, ruta, nota):
     return [Paragraph(titulo_txt, h1), imagen(ruta, 19 if "pantallazo" not in nota else 19),
             Spacer(1, 6), Paragraph(nota, pequeno), PageBreak()]
-
 
 def leer(nombre):
     """Lee el CSV en formato coma/punto o ;/coma (05 lo reescribe en ;/coma)."""
@@ -69,14 +65,14 @@ def leer(nombre):
         return pd.read_csv(ruta, sep=";", decimal=",", encoding="utf-8-sig")
     return pd.read_csv(ruta, encoding="utf-8-sig")
 
-
 cv = leer("metricas_validacion_cruzada.csv")
 test = leer("metricas_test.csv")
 decil = leer("ganancia_por_decil_random_forest.csv")
 
 historia = []
 
-# Portada
+"""Portada"""
+
 historia += [Spacer(1, 4 * cm),
              Paragraph("Enfermedad cardiaca: factores de riesgo y modelos predictivos", titulo),
              Spacer(1, 12),
@@ -87,7 +83,8 @@ historia += [Spacer(1, 4 * cm),
                        "licencia CC0.", pequeno),
              PageBreak()]
 
-# 1. Negocio
+"""1. Negocio"""
+
 historia += [Paragraph("1. Comprensión del negocio", h1),
              Paragraph("Pregunta: ¿qué factores de salud y hábitos se asocian con infarto o "
                        "enfermedad cardiaca, y qué tan bien se puede estimar ese riesgo para "
@@ -97,7 +94,8 @@ historia += [Paragraph("1. Comprensión del negocio", h1),
                        "Muestran asociaciones, no causas.", texto),
              PageBreak()]
 
-# 2. Datos
+"""2. Datos"""
+
 historia += [Paragraph("2. Comprensión y preparación de los datos", h1),
              Paragraph("253.680 registros originales; 23.899 duplicados exactos eliminados; "
                        "229.781 registros finales. Sin nulos. Evento en 10,3 % (desbalance).",
@@ -114,7 +112,8 @@ historia += pagina_figura("2.2 Tasa de evento por edad y salud general",
                           FIG / "03_tasas_edad_salud.png",
                           "La tasa sube de 0,5 % (grupo 1) a 24,6 % (grupo 13).")
 
-# 3. Modelos
+"""3. Modelos"""
+
 historia += [Paragraph("3. Modelamiento y evaluación", h1),
              Paragraph("Validación cruzada de 5 folds (entrenamiento):", texto),
              Spacer(1, 4), tabla(cv), Spacer(1, 12),
@@ -135,7 +134,8 @@ historia += pagina_figura("3.5 Matriz de confusión (umbral 0,5)",
                           FIG / "05_matriz_confusion.png",
                           "Gradient boosting con umbral 0,5: detecta ~80 % de los casos (3.801 de 4.743), con precisión ~25 %.")
 
-# 3.6 a 3.8 Robustez, equidad y calibración (fase 6)
+"""3.6 a 3.8 Robustez, equidad y calibración (fase 6)"""
+
 ic = leer("intervalos_confianza_bootstrap.csv")
 ic["IC 95 %"] = ic["ic95_inferior"].map(lambda v: f"{v:.4f}") + " a " + ic["ic95_superior"].map(lambda v: f"{v:.4f}")
 ic = ic[["modelo", "metrica", "valor", "IC 95 %"]]
@@ -160,7 +160,8 @@ historia += [Paragraph("3.8 Calibración de las probabilidades", h1),
              Spacer(1, 6), tabla(cal), Spacer(1, 10),
              imagen(FIG / "09_calibracion.png", 14, 11), PageBreak()]
 
-# 4. Conclusiones
+"""4. Conclusiones"""
+
 historia += [Paragraph("4. Conclusiones y recomendaciones", h1),
              Paragraph("• Edad y salud general son los factores más asociados al evento.", texto),
              Paragraph("• Regresión logística y Random Forest rinden casi igual (AUC ≈ 0,84). "
@@ -172,14 +173,12 @@ historia += [Paragraph("4. Conclusiones y recomendaciones", h1),
              Paragraph("• Limitaciones: datos autoreportados, sin búsqueda de hiperparámetros "
                        "y sin validación externa.", texto)]
 
-
 def pie(canvas, doc):
     canvas.saveState()
     canvas.setFont("Helvetica", 8)
     canvas.setFillColor(colors.grey)
     canvas.drawRightString(A4[1] - 1.5 * cm, 0.8 * cm, f"Página {doc.page}")
     canvas.restoreState()
-
 
 doc = SimpleDocTemplate(str(SAL), pagesize=landscape(A4),
                         leftMargin=1.8 * cm, rightMargin=1.8 * cm,

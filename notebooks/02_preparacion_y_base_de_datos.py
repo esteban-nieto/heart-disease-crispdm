@@ -1,8 +1,7 @@
-# %% [markdown]
-# **Autor:** Alejandro Pedreros  
-# **Fecha:** 13/11/2026
-#
-# %%
+"""**Autor:** Alejandro Pedreros
+
+**Fecha:** 13/11/2026"""
+
 """
 CRISP-DM fase 3: preparación de los datos y carga en base de datos SQLite.
 
@@ -24,7 +23,8 @@ BD = RAIZ / "data" / "heart_disease.db"
 
 df_raw = pd.read_csv(CSV)
 
-# ---------- Validación de códigos y rangos (según el libro de códigos BRFSS) ----------
+"""Validación de códigos y rangos (según el libro de códigos BRFSS)"""
+
 RANGOS = {
     "BMI": (12, 98), "MentHlth": (0, 30), "PhysHlth": (0, 30),
     "GenHlth": (1, 5), "Age": (1, 13), "Education": (1, 6), "Income": (1, 8),
@@ -44,12 +44,15 @@ for col in BINARIAS:
         errores.append(f"{col}: valores distintos de 0/1")
 print("Validación:", "OK" if not errores else errores)
 
-# ---------- Limpieza ----------
+"""Limpieza"""
+
 df = df_raw.drop_duplicates().reset_index(drop=True)
 print(f"Filas originales: {len(df_raw)}  |  sin duplicados: {len(df)}")
 
-# ---------- Variables derivadas ----------
-# Código de edad BRFSS: 1 = 18-24 años, ..., 13 = 80 años o más (grupos de 5 años).
+"""Variables derivadas
+
+Código de edad BRFSS: 1 = 18-24 años, ..., 13 = 80 años o más (grupos de 5 años)."""
+
 EDAD_APROX = {1: 21, 2: 27, 3: 32, 4: 37, 5: 42, 6: 47, 7: 52, 8: 57,
               9: 62, 10: 67, 11: 72, 12: 77, 13: 82}
 df["edad_aprox"] = df["Age"].map(EDAD_APROX)
@@ -60,7 +63,8 @@ df["num_condiciones"] = df[["HighBP", "HighChol", "Diabetes", "Smoker", "Stroke"
 df["inactivo"] = (1 - df["PhysActivity"]).astype(int)
 df["sexo"] = df["Sex"].map({0: "Mujer", 1: "Hombre"})
 
-# ---------- Carga en SQLite ----------
+"""Carga en SQLite"""
+
 if BD.exists():
     BD.unlink()
 with sqlite3.connect(BD) as con:
@@ -77,4 +81,3 @@ with sqlite3.connect(BD) as con:
         "COUNT(*) AS n FROM encuestados GROUP BY Age ORDER BY Age", con)
 print(f"\nBD creada en {BD} con {n} filas en 'encuestados'.")
 print(tasas.to_string(index=False))
-

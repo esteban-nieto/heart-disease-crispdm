@@ -29,12 +29,10 @@ DECIMAL = ","
 COLUMNAS_DICCIONARIO = {"tasa_evento_por_nivel", "tasa_riesgo_por_nivel",
                         "tasa_evento", "tasa_riesgo"}
 
-
 def _es_diccionario(serie):
     """Una columna es diccionario si sus valores tienen forma de dict: {...}."""
     muestra = serie.dropna().astype(str)
     return len(muestra) > 0 and muestra.str.startswith("{").all()
-
 
 def a_tabular(df):
     """Expande columnas tipo diccionario en filas (una por nivel)."""
@@ -54,14 +52,12 @@ def a_tabular(df):
                           "p_valor": base.get("p_valor")})
     return pd.DataFrame(filas)
 
-
 def leer_csv(ruta):
     """Lee CSV en cualquiera de los dos formatos (coma/punto o ;/coma)."""
     cabecera = Path(ruta).read_text(encoding="utf-8-sig").splitlines()[0]
     if ";" in cabecera:
         return pd.read_csv(ruta, sep=";", decimal=",", encoding="utf-8-sig")
     return pd.read_csv(ruta, encoding="utf-8-sig")
-
 
 def reescribir_csv(ruta):
     df = leer_csv(ruta)
@@ -74,8 +70,7 @@ def reescribir_csv(ruta):
               encoding="utf-8-sig", float_format="%.6g")
     return df
 
-
-# ---------------- Word ----------------
+"""Word"""
 
 def _fondo_celda(celda, color_hex):
     props = celda._tc.get_or_add_tcPr()
@@ -84,7 +79,6 @@ def _fondo_celda(celda, color_hex):
     sombreado.set(qn("w:color"), "auto")
     sombreado.set(qn("w:fill"), color_hex)
     props.append(sombreado)
-
 
 def _runs_inline(parrafo, texto, tamano=None):
     """Aplica **negrita**, `código` y quita enlaces [texto](url)."""
@@ -101,7 +95,6 @@ def _runs_inline(parrafo, texto, tamano=None):
             r = parrafo.add_run(parte)
         if tamano:
             r.font.size = Pt(tamano)
-
 
 def _tabla(doc, filas):
     filas = [f for f in filas if not all(re.fullmatch(r":?-{3,}:?", c.strip()) for c in f)]
@@ -121,7 +114,6 @@ def _tabla(doc, filas):
                     r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
                 _fondo_celda(celda, "2A7AB0")
     doc.add_paragraph()
-
 
 def markdown_a_word(md_path, salida, ancho_img_cm=15):
     md_path = Path(md_path)
@@ -191,7 +183,8 @@ def markdown_a_word(md_path, salida, ancho_img_cm=15):
             p = doc.add_paragraph(style="List Number")
             _runs_inline(p, re.sub(r"^\d+\. ", "", s))
         else:
-            # Línea de párrafo: une líneas consecutivas de texto normal.
+            """Línea de párrafo: une líneas consecutivas de texto normal."""
+
             bloque = [s]
             while i + 1 < len(lineas):
                 sig = lineas[i + 1].strip()
@@ -208,22 +201,22 @@ def markdown_a_word(md_path, salida, ancho_img_cm=15):
     doc.save(salida)
     return salida
 
-
 def main(raiz):
     raiz = Path(raiz)
     reportes = raiz / "reports"
-    # CSV
+    """CSV"""
+
     for csv in sorted(reportes.glob("*.csv")):
         df = reescribir_csv(csv)
         print(f"CSV reescrito: {csv.name}  ({df.shape[0]} filas x {df.shape[1]} columnas)")
-    # Word
+    """Word"""
+
     for md in sorted(reportes.glob("*.md")):
         if md.name.lower() in ("readme.md",):
             continue
         salida = reportes / (md.stem + ".docx")
         markdown_a_word(md, salida)
         print(f"Word generado: {salida}")
-
 
 if __name__ == "__main__":
     for ruta in sys.argv[1:] or ["."]:

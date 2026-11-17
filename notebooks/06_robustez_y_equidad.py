@@ -1,23 +1,11 @@
-# %% [markdown]
-# **Autor:** Alejandro Pedreros
-# **Fecha:** 13/11/2026
-#
+"""**Autor:** Alejandro Pedreros
 
-# %% [markdown]
-# # 6. Robustez y equidad (complemento de las fases 4 y 5)
-#
-# Reajusta la regresión logística y el Random Forest con la misma partición de la
-# fase 3 y responde tres preguntas:
-#
-# 1. ¿Qué tan estables son las métricas? Intervalos de confianza por bootstrap
-#    (1.000 remuestreos del conjunto de prueba).
-# 2. ¿El modelo funciona igual para hombres y mujeres, y para mayores y menores de 65 años?
-# 3. ¿Las probabilidades están calibradas? Brier score y tabla de calibración.
-#
-# Ejecutar desde la raíz del proyecto:
-#     python notebooks/06_robustez_y_equidad.py
+**Fecha:** 13/11/2026"""
 
-# %%
+"""6. Robustez y equidad (complemento de las fases 4 y 5)
+
+Reajusta la regresión logística y el Random Forest con la misma partición de la fase 3 y responde tres preguntas: 1. ¿Qué tan estables son las métricas? Intervalos de confianza por bootstrap (1.000 remuestreos del conjunto de prueba). 2. ¿El modelo funciona igual para hombres y mujeres, y para mayores y menores de 65 años? 3. ¿Las probabilidades están calibradas? Brier score y tabla de calibración. Ejecutar desde la raíz del proyecto: python notebooks/06_robustez_y_equidad.py"""
+
 import os
 import sqlite3
 from pathlib import Path
@@ -43,10 +31,8 @@ FIG = REP / "figures"
 SEMILLA = 42
 B = 1000
 
-# %% [markdown]
-# ## 6.1. Misma partición que la fase 3
+"""6.1. Misma partición que la fase 3"""
 
-# %%
 with sqlite3.connect(BD) as con:
     df = pd.read_sql("SELECT * FROM encuestados", con)
 
@@ -62,10 +48,8 @@ X_tr, X_te, y_tr, y_te = train_test_split(
 te = X_te.copy()
 te["y"] = y_te.values
 
-# %% [markdown]
-# ## 6.2. Reajuste de los modelos principales
+"""6.2. Reajuste de los modelos principales"""
 
-# %%
 logit = make_pipeline(StandardScaler(),
                       LogisticRegression(max_iter=1000, class_weight="balanced"))
 rf = RandomForestClassifier(n_estimators=300, max_depth=12, min_samples_leaf=50,
@@ -77,13 +61,10 @@ p = {"Regresión logística": logit.predict_proba(X_te)[:, 1],
      "Random Forest": rf.predict_proba(X_te)[:, 1]}
 print("Modelos reajustados.")
 
-# %% [markdown]
-# ## 6.3. Intervalos de confianza por bootstrap
-#
-# Se remuestrea el conjunto de prueba con reemplazo. El intervalo del 95 % va de
-# los percentiles 2,5 y 97,5 de las métricas obtenidas.
+"""6.3. Intervalos de confianza por bootstrap
 
-# %%
+Se remuestrea el conjunto de prueba con reemplazo. El intervalo del 95 % va de los percentiles 2,5 y 97,5 de las métricas obtenidas."""
+
 rng = np.random.default_rng(SEMILLA)
 idx = [rng.integers(0, len(y_te), len(y_te)) for _ in range(B)]
 yt = y_te.values
@@ -106,13 +87,10 @@ tabla_ic = pd.DataFrame(filas)
 print(tabla_ic.to_string(index=False))
 tabla_ic.to_csv(REP / "intervalos_confianza_bootstrap.csv", index=False)
 
-# %% [markdown]
-# ## 6.4. Equidad: métricas por subgrupo
-#
-# Se calculan ROC-AUC, recall y precisión (umbral 0,5) para cada grupo. Una brecha
-# grande entre grupos indica que el modelo no funciona igual para todos.
+"""6.4. Equidad: métricas por subgrupo
 
-# %%
+Se calculan ROC-AUC, recall y precisión (umbral 0,5) para cada grupo. Una brecha grande entre grupos indica que el modelo no funciona igual para todos."""
+
 def metricas_grupo(mascara, pr):
     yy = te.loc[mascara, "y"].values
     pp = pr[mascara.values]
@@ -142,14 +120,10 @@ tabla_eq = pd.DataFrame(filas)
 print(tabla_eq.to_string(index=False))
 tabla_eq.to_csv(REP / "metricas_por_subgrupo.csv", index=False)
 
-# %% [markdown]
-# ## 6.5. Calibración
-#
-# Brier score (menor es mejor) y tabla de calibración por deciles de probabilidad
-# predicha. Si la tasa observada se parece a la predicha, las probabilidades son
-# confiables para usarlas como riesgo.
+"""6.5. Calibración
 
-# %%
+Brier score (menor es mejor) y tabla de calibración por deciles de probabilidad predicha. Si la tasa observada se parece a la predicha, las probabilidades son confiables para usarlas como riesgo."""
+
 filas = []
 for nombre, pr in p.items():
     filas.append({"modelo": nombre,

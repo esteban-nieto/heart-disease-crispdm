@@ -1,25 +1,11 @@
-# %% [markdown]
-# **Autor:** Alejandro Pedreros  
-# **Fecha:** 13/11/2026
-#
+"""**Autor:** Alejandro Pedreros
 
-# %% [markdown]
-# # 4. Modelamiento y 5. Evaluación
-#
-# Lee la tabla `encuestados` desde `data/heart_disease.db`, compara modelos con
-# validación cruzada y evalúa en un conjunto de prueba (20 %).
-#
-# Modelos: línea base, **Regresión logística** y **Random Forest** (el mismo
-# par de familias que usa el repositorio de referencia), más un
-# **gradient boosting** como comparación adicional.
-#
-# Explicabilidad: **SHAP** sobre el Random Forest. Diagnóstico: **curvas de
-# aprendizaje** y **curva de ganancia por deciles**.
-#
-# Ejecutar desde la raíz del proyecto:
-#     python notebooks/03_modelamiento_y_evaluacion.py
+**Fecha:** 13/11/2026"""
 
-# %%
+"""4. Modelamiento y 5. Evaluación
+
+Lee la tabla `encuestados` desde `data/heart_disease.db`, compara modelos con validación cruzada y evalúa en un conjunto de prueba (20 %). Modelos: línea base, **Regresión logística** y **Random Forest** (el mismo par de familias que usa el repositorio de referencia), más un **gradient boosting** como comparación adicional. Explicabilidad: **SHAP** sobre el Random Forest. Diagnóstico: **curvas de aprendizaje** y **curva de ganancia por deciles**. Ejecutar desde la raíz del proyecto: python notebooks/03_modelamiento_y_evaluacion.py"""
+
 import os
 import sqlite3
 from pathlib import Path
@@ -50,10 +36,8 @@ FIGURAS = RAIZ / "reports" / "figures"
 FIGURAS.mkdir(parents=True, exist_ok=True)
 SEMILLA = 42
 
-# %% [markdown]
-# ## 4.1. Datos y partición
+"""4.1. Datos y partición"""
 
-# %%
 with sqlite3.connect(BD) as con:
     df = pd.read_sql("SELECT * FROM encuestados", con)
 
@@ -70,15 +54,10 @@ X_tr, X_te, y_tr, y_te = train_test_split(
 print(f"Entrenamiento: {len(X_tr)}  |  prueba: {len(X_te)}  |  "
       f"prevalencia en prueba: {y_te.mean():.4f}")
 
-# %% [markdown]
-# ## 4.2. Construcción de los modelos
-#
-# - **Regresión logística:** requiere escalado (`StandardScaler`) porque penaliza
-#   por igual todas las variables.
-# - **Random Forest y gradient boosting:** basados en árboles, no requieren escalado.
-# - `class_weight="balanced"` compensa el desbalance (10 % de positivos).
+"""4.2. Construcción de los modelos
 
-# %%
+- **Regresión logística:** requiere escalado (`StandardScaler`) porque penaliza por igual todas las variables. - **Random Forest y gradient boosting:** basados en árboles, no requieren escalado. - `class_weight="balanced"` compensa el desbalance (10 % de positivos)."""
+
 modelos = {
     "Línea base (mayoritaria)": make_pipeline(
         StandardScaler(), DummyClassifier(strategy="most_frequent")),
@@ -91,10 +70,8 @@ modelos = {
         class_weight="balanced", random_state=SEMILLA),
 }
 
-# %% [markdown]
-# ## 4.3. Validación cruzada (solo entrenamiento, 5 folds)
+"""4.3. Validación cruzada (solo entrenamiento, 5 folds)"""
 
-# %%
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEMILLA)
 filas = []
 for nombre, modelo in modelos.items():
@@ -112,10 +89,8 @@ print("=== VALIDACIÓN CRUZADA (5 folds) ===")
 print(tabla_cv.to_string(index=False))
 tabla_cv.to_csv(RAIZ / "reports" / "metricas_validacion_cruzada.csv", index=False)
 
-# %% [markdown]
-# ## 5. Evaluación en el conjunto de prueba
+"""5. Evaluación en el conjunto de prueba"""
 
-# %%
 filas = []
 probs = {}
 for nombre, modelo in modelos.items():
@@ -136,8 +111,8 @@ print("\n=== EVALUACIÓN EN PRUEBA (20 %) ===")
 print(tabla_test.to_string(index=False))
 tabla_test.to_csv(RAIZ / "reports" / "metricas_test.csv", index=False)
 
-# %%
-# Curvas ROC
+"""Curvas ROC"""
+
 fig, eje = plt.subplots(figsize=(6, 5))
 for nombre, prob in probs.items():
     RocCurveDisplay.from_predictions(y_te, prob, name=nombre, ax=eje)
@@ -147,7 +122,8 @@ fig.tight_layout()
 fig.savefig(FIGURAS / "04_curvas_roc.png", dpi=110)
 plt.close(fig)
 
-# Matriz de confusión del mejor modelo por ROC-AUC
+"""Matriz de confusión del mejor modelo por ROC-AUC"""
+
 mejor = tabla_test[tabla_test["modelo"] != "Línea base (mayoritaria)"] \
     .sort_values("roc_auc", ascending=False).iloc[0]["modelo"]
 pred_mejor = (probs[mejor] >= 0.5).astype(int)
@@ -159,12 +135,10 @@ fig.tight_layout()
 fig.savefig(FIGURAS / "05_matriz_confusion.png", dpi=110)
 plt.close(fig)
 
-# %% [markdown]
-# ### 5.1. Ganancia por deciles
-# Se ordenan los encuestados de prueba por probabilidad predicha y se mide la tasa
-# real de evento en cada decil. Permite priorizar a quién contactar primero.
+"""5.1. Ganancia por deciles
 
-# %%
+Se ordenan los encuestados de prueba por probabilidad predicha y se mide la tasa real de evento en cada decil. Permite priorizar a quién contactar primero."""
+
 decil_df = pd.DataFrame({"prob": probs["Random Forest"], "y": y_te.to_numpy()})
 decil_df["decil"] = pd.qcut(decil_df["prob"].rank(method="first", ascending=False),
                             10, labels=range(1, 11))
@@ -186,12 +160,10 @@ fig.tight_layout()
 fig.savefig(FIGURAS / "06_ganancia_por_decil.png", dpi=110)
 plt.close(fig)
 
-# %% [markdown]
-# ## 5.2. Curvas de aprendizaje
-# Diagnóstico de sobreajuste: si la brecha entre entrenamiento y validación es
-# grande, el modelo memoriza; si ambas curvas están cerca, generaliza bien.
+"""5.2. Curvas de aprendizaje
 
-# %%
+Diagnóstico de sobreajuste: si la brecha entre entrenamiento y validación es grande, el modelo memoriza; si ambas curvas están cerca, generaliza bien."""
+
 fig, ejes = plt.subplots(1, 2, figsize=(12, 4))
 for eje, nombre in zip(ejes, ["Regresión logística", "Random Forest"]):
     tam, tr_sc, va_sc = learning_curve(
@@ -207,18 +179,16 @@ fig.tight_layout()
 fig.savefig(FIGURAS / "07_curvas_aprendizaje.png", dpi=110)
 plt.close(fig)
 
-# %% [markdown]
-# ## 5.3. Explicabilidad con SHAP (Random Forest)
-# Se usa una muestra de 300 registros de prueba: con 300 árboles de profundidad 12,
-# TreeExplainer tarda demasiado con muestras grandes. check_additivity se desactiva
-# para acelerar; la suma de SHAP se verificó en una corrida exploratoria.
+"""5.3. Explicabilidad con SHAP (Random Forest)
 
-# %%
+Se usa una muestra de 300 registros de prueba: con 300 árboles de profundidad 12, TreeExplainer tarda demasiado con muestras grandes. check_additivity se desactiva para acelerar; la suma de SHAP se verificó en una corrida exploratoria."""
+
 rf = modelos["Random Forest"]
 muestra = X_te.sample(300, random_state=SEMILLA)
 explicador = shap.TreeExplainer(rf)
 valores = explicador.shap_values(muestra, check_additivity=False)
-# En algunas versiones devuelve una lista por clase; se toma la clase positiva.
+"""En algunas versiones devuelve una lista por clase; se toma la clase positiva."""
+
 if isinstance(valores, list):
     valores = valores[1]
 elif valores.ndim == 3:
@@ -237,10 +207,8 @@ importancia_shap.to_csv(RAIZ / "reports" / "importancia_shap_random_forest.csv",
 print("\nImportancia SHAP media absoluta (Random Forest), top 10:")
 print(importancia_shap.head(10).round(4).to_string())
 
-# %% [markdown]
-# ## 5.4. Importancia por permutación (gradient boosting, comparación)
+"""5.4. Importancia por permutación (gradient boosting, comparación)"""
 
-# %%
 gb = modelos["Gradient boosting"]
 perm = permutation_importance(gb, X_te, y_te, scoring="average_precision",
                               n_repeats=3, random_state=SEMILLA, n_jobs=1)
@@ -249,10 +217,8 @@ imp.to_csv(RAIZ / "reports" / "importancia_permutacion_gb.csv", header=["reducci
 print("\nImportancia por permutación (gradient boosting), top 10:")
 print(imp.head(10).round(4).to_string())
 
-# %% [markdown]
-# ## 5.5. Coeficientes de la regresión logística
+"""5.5. Coeficientes de la regresión logística"""
 
-# %%
 logit = modelos["Regresión logística"]
 coef = pd.Series(logit.named_steps["logisticregression"].coef_[0], index=FEATURES)
 coef = coef.reindex(coef.abs().sort_values(ascending=False).index)

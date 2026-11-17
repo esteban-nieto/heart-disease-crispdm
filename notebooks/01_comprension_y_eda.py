@@ -1,8 +1,7 @@
-# %% [markdown]
-# **Autor:** Alejandro Pedreros  
-# **Fecha:** 13/11/2026
-#
-# %%
+"""**Autor:** Alejandro Pedreros
+
+**Fecha:** 13/11/2026"""
+
 """
 CRISP-DM fases 1 y 2: comprensión del negocio y de los datos (EDA).
 
@@ -29,16 +28,18 @@ NUMERICAS = ["BMI", "MentHlth", "PhysHlth", "GenHlth", "Age", "Education", "Inco
 BINARIAS = ["HighBP", "HighChol", "CholCheck", "Smoker", "Stroke", "Diabetes",
             "PhysActivity", "Fruits", "Veggies", "HvyAlcoholConsump",
             "AnyHealthcare", "NoDocbcCost", "DiffWalk", "Sex"]
-# Diabetes tiene códigos 0, 1 y 2; se trata como categórica en las pruebas.
+"""Diabetes tiene códigos 0, 1 y 2; se trata como categórica en las pruebas."""
 
-# ---------- Fase 1: comprensión del negocio ----------
+"""Fase 1: comprensión del negocio"""
+
 print("=== FASE 1: COMPRENSIÓN DEL NEGOCIO ===")
 print("Objetivo: identificar factores de salud y hábitos asociados a infarto o "
       "enfermedad cardiaca (HeartDiseaseorAttack) y estimar la probabilidad de "
       "que una persona la presente, para apoyar la prevención.")
 print("Fuente: encuesta BRFSS 2015 (CDC, EE. UU.), datos autoreportados.")
 
-# ---------- Fase 2: comprensión de los datos ----------
+"""Fase 2: comprensión de los datos"""
+
 print("\n=== FASE 2: COMPRENSIÓN DE LOS DATOS ===")
 print("Filas x columnas:", df.shape)
 print("Nulos totales:", int(df.isna().sum().sum()))
@@ -54,7 +55,8 @@ print(df_sin_dup[TARGET].value_counts(normalize=True).round(4).to_string())
 resumen = df_sin_dup[NUMERICAS + BINARIAS].describe().T.round(2)
 resumen.to_csv(RAIZ / "reports" / "estadisticas_descriptivas.csv")
 
-# Distribuciones
+"""Distribuciones"""
+
 fig, ejes = plt.subplots(2, 4, figsize=(16, 8))
 for eje, col in zip(ejes.flat, NUMERICAS + ["Smoker"]):
     sns.histplot(df_sin_dup[col], bins=30, ax=eje, color="#2a7ab0")
@@ -63,7 +65,8 @@ fig.tight_layout()
 fig.savefig(FIGURAS / "01_distribuciones.png", dpi=110)
 plt.close(fig)
 
-# Asociación numéricas vs target
+"""Asociación numéricas vs target"""
+
 filas = []
 for col in NUMERICAS:
     a = df_sin_dup.loc[df_sin_dup[TARGET] == 0, col]
@@ -75,7 +78,8 @@ for col in NUMERICAS:
                   "p_valor": p})
 tabla_num = pd.DataFrame(filas)
 
-# Asociación binarias vs target
+"""Asociación binarias vs target"""
+
 filas = []
 for col in BINARIAS:
     tabla = pd.crosstab(df_sin_dup[col], df_sin_dup[TARGET])
@@ -91,7 +95,8 @@ print(tabla_num.to_string(index=False))
 print("\nAsociación binarias vs target:")
 print(tabla_cat.to_string(index=False))
 
-# Correlación con el target
+"""Correlación con el target"""
+
 corr = df_sin_dup[NUMERICAS + BINARIAS + [TARGET]].corr()[TARGET].drop(TARGET)
 corr.sort_values().to_csv(RAIZ / "reports" / "correlacion_con_target.csv", header=["r"])
 
@@ -103,7 +108,8 @@ fig.tight_layout()
 fig.savefig(FIGURAS / "02_correlacion.png", dpi=110)
 plt.close(fig)
 
-# Tasa de evento por edad (código BRFSS 1-13) y por salud general
+"""Tasa de evento por edad (código BRFSS 1-13) y por salud general"""
+
 fig, ejes = plt.subplots(1, 2, figsize=(12, 4.5))
 sns.barplot(data=df_sin_dup.groupby("Age")[TARGET].mean().reset_index(),
             x="Age", y=TARGET, ax=ejes[0], color="#c0392b")
