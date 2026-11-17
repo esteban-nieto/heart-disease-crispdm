@@ -52,8 +52,7 @@ heart-disease-crispdm/
 │   ├── presentacion_resultados.pdf                     Presentación (15 páginas)
 │   ├── presentacion_resultados.pptx                    Diapositivas
 │   ├── *.csv                                           Tablas de métricas y análisis
-│   ├── figures/                                        Figuras 01 a 09
-│   └── screenshots/                                    Pantallazos de terminal, notebook y Kaggle
+│   └── figures/                                        Figuras 01 a 09
 ├── .gitignore
 ├── requirements.txt
 └── README.md

@@ -14,7 +14,7 @@
   heart-disease-crispdm/
   ├── data/               CSV original, base SQLite y datos limpios
   ├── notebooks/          análisis completo en un notebook (fases 1 a 4)
-  ├── reports/            tablas CSV, figuras, pantallazos, informes y presentación PDF
+  ├── reports/            tablas CSV, figuras, informes y presentación PDF
   ├── requirements.txt
   └── README.md
   ```
@@ -45,9 +45,7 @@
 - Nulos: **0**.
 - Duplicados exactos: **23.899**.
 
-Pantallazo de la página del dataset en Kaggle (tomada con el navegador de prueba el 13/11/2026):
 
-![Página del dataset en Kaggle](screenshots/06_kaggle_pagina_dataset.png)
 
 ### 2.2 Diccionario de variables (codificación original BRFSS)
 
@@ -73,7 +71,6 @@ Pantallazo de la página del dataset en Kaggle (tomada con el navegador de prueb
 
 Salida real de la fase 1 y 2:
 
-![Salida de la fase 1 y 2](screenshots/terminal_01_comprension_y_eda.png)
 
 ### 2.4 Análisis exploratorio
 
@@ -179,7 +176,6 @@ Verificación de la carga (tasa de evento por grupo de edad):
 
 Salida real de la fase 3:
 
-![Salida de la preparación y carga](screenshots/terminal_02_preparacion_y_base_de_datos.png)
 
 ---
 
@@ -226,9 +222,7 @@ Se calcularon para regresión logística y Random Forest, con PR-AUC y 5 tamaño
 
 Salida real del modelamiento (fase 4 y 5):
 
-![Salida del modelamiento](screenshots/terminal_03_modelamiento_y_evaluacion.png)
 
-![Salidas del notebook 03 ejecutado](screenshots/notebook_03_salidas.png)
 
 ---
 
@@ -286,7 +280,6 @@ Se ordenaron los registros de prueba por probabilidad predicha y se midió la ta
 | 7 | 1,8 % | 0,18 |
 | 8 | 1,2 % | 0,11 |
 | 9 | 0,8 % | 0,08 |
-| 10 | 0,3 % | 0,03 |
 
 El primer decil concentra 40 % de eventos reales, casi 4 veces la tasa media. Para una campaña de prevención, contactar primero a ese decil es la estrategia más eficiente.
 
@@ -307,7 +300,6 @@ El primer decil concentra 40 % de eventos reales, casi 4 veces la tasa media. Pa
 | 7 | Smoker | 0,025 |
 | 8 | Diabetes | 0,022 |
 | 9 | Stroke | 0,019 |
-| 10 | PhysHlth | 0,018 |
 
 ![Resumen SHAP](figures/08_shap_resumen.png)
 
@@ -364,7 +356,6 @@ Figura de calibración: `reports/figures/09_calibracion.png`.
 
 ![Curva de calibración](figures/09_calibracion.png)
 
-![Salida de la fase 6](screenshots/terminal_06_robustez_y_equidad.png)
 
 ## 6. Presentación de resultados
 
@@ -376,7 +367,6 @@ Entregables:
 - Tablas: `reports/metricas_*.csv`, `reports/asociacion_*.csv`, `reports/ganancia_por_decil_random_forest.csv`, `reports/importancia_shap_random_forest.csv`, `reports/coeficientes_regresion_logistica.csv`, `reports/importancia_permutacion_gb.csv`.
 - Figuras: `reports/figures/` (01 a 09).
 - Notebook: `notebooks/analisis_crispdm.ipynb` (ejecutado de principio a fin).
-- Pantallazos: `reports/screenshots/`.
 - Base de datos: `data/heart_disease.db`.
 
 **Recomendación:** la regresión logística es la opción para producción si se necesita explicar cada coeficiente. El gradient boosting obtiene la mayor ROC-AUC y PR-AUC en prueba, pero la diferencia con la regresión logística es de 0,003 en ROC-AUC y 0,004 en PR-AUC. Esa diferencia no justifica perder interpretabilidad.
@@ -418,8 +408,6 @@ Entregables:
 | 6 | Fase 4–5: CV, prueba, curvas de aprendizaje, SHAP, deciles, permutación | `notebooks/analisis_crispdm.ipynb` | `reports/metricas_*.csv`, `figures/04–08` |
 | 7 | Primera ejecución de SHAP con 2.000 registros: superó 900 s (código 124) | `03_…py` | sin figura 08 |
 | 8 | Reducir la muestra SHAP a 300 y re-ejecutar la fase completa | `03_…py` | log completo, `figures/08` |
-| 10 | Pantallazos del terminal renderizados a partir de la salida del notebook | Python + matplotlib | `reports/screenshots/terminal_*.png` |
-| 11 | Captura de la página del dataset en Kaggle | navegador de prueba | `reports/screenshots/06_kaggle_pagina_dataset.png` |
 | 13 | Generar la presentación ejecutiva en PDF | `notebooks/analisis_crispdm.ipynb` | `reports/presentacion_resultados.pdf` |
 | 14 | Redactar el informe técnico | Markdown | este archivo |
 | 15 | Robustez y equidad: IC bootstrap, métricas por subgrupo, calibración | `notebooks/analisis_crispdm.ipynb` | `reports/intervalos_confianza_bootstrap.csv`, `metricas_por_subgrupo.csv`, `calibracion_brier.csv`, `figures/09` |
