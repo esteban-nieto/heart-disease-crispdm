@@ -5,11 +5,5 @@ seaborn
 scipy
 scikit-learn
 shap
-nbformat
-nbconvert
-nbclient
+jupyter
 ipykernel
-reportlab
-pillow
-python-docx
-python-pptx
