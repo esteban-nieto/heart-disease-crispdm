@@ -2,7 +2,7 @@
 
 Proyecto de ciencia de datos que estudia qué factores de salud y hábitos se asocian con infarto o enfermedad cardiaca, y qué tan bien se puede estimar ese riesgo con modelos predictivos. Sigue la metodología CRISP-DM en sus seis fases.
 
-**Autor:** Esteban Alejandro Pedreros
+**Autor:** Alejandro Pedreros
 **Fecha:** 13/11/2026
 
 ---

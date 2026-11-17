@@ -1,5 +1,5 @@
 # %% [markdown]
-# **Autor:** Esteban Alejandro Pedreros
+# **Autor:** Alejandro Pedreros
 # **Fecha:** 13/11/2026
 #
 
