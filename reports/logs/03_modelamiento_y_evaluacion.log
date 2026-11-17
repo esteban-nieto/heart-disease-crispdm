@@ -1,9 +1,9 @@
 Entrenamiento: 183824  |  prueba: 45957  |  prevalencia en prueba: 0.1032
-C:\Users\ESTEBAN\AppData\Roaming\Python\Python312\site-packages\joblib\externals\loky\backend\context.py:131: UserWarning: Could not find the number of physical cores for the following reason:
+C:<python-usuario>\site-packages\joblib\externals\loky\backend\context.py:131: UserWarning: Could not find the number of physical cores for the following reason:
 found 0 physical cores < 1
 Returning the number of logical cores instead. You can silence this warning by setting LOKY_MAX_CPU_COUNT to the number of cores you want to use.
   warnings.warn(
-  File "C:\Users\ESTEBAN\AppData\Roaming\Python\Python312\site-packages\joblib\externals\loky\backend\context.py", line 255, in _count_physical_cores
+  File "C:<python-usuario>\site-packages\joblib\externals\loky\backend\context.py", line 255, in _count_physical_cores
     raise ValueError(f"found {cpu_count_physical} physical cores < 1")
 === VALIDACIÓN CRUZADA (5 folds) ===
                   modelo  cv_roc_auc  cv_roc_auc_std  cv_pr_auc  cv_f1
