@@ -27,6 +27,7 @@ Se compararon una línea base (clase mayoritaria), regresión logística con `cl
 |---|---|---|---|
 | Línea base | 0,500 | 0,103 | 0,000 |
 | Regresión logística | 0,836 ± 0,003 | 0,373 | 0,383 |
+| Random Forest | 0,836 ± 0,003 | 0,374 | 0,381 |
 | Gradient boosting | 0,838 ± 0,003 | 0,378 | 0,379 |
 
 **Conjunto de prueba (20 %, 45.957 registros):**
@@ -35,11 +36,12 @@ Se compararon una línea base (clase mayoritaria), regresión logística con `cl
 |---|---|---|---|---|---|
 | Línea base | 0,500 | 0,103 | 0,000 | 0,000 | 0,000 |
 | Regresión logística | 0,836 | 0,373 | 0,252 | 0,778 | 0,381 |
+| Random Forest | 0,837 | 0,371 | 0,249 | 0,794 | 0,379 |
 | Gradient boosting | **0,838** | **0,377** | 0,246 | **0,801** | 0,376 |
 
 **Lectura de los resultados:**
 - Los dos modelos dan resultados casi iguales. La regresión logística es más simple y fácil de explicar, así que es la recomendada.
-- Con umbral 0,5, el modelo detecta cerca del 78 % de los casos reales, pero una parte de las alertas son falsas (precisión ≈ 25 %). Para un tamizaje, esto suele ser aceptable. El umbral se puede ajustar según el costo de un falso negativo frente a un falso positivo.
+- Con umbral 0,5, la regresión logística detecta cerca del 78 % de los casos reales, pero una parte de las alertas son falsas (precisión ≈ 25 %). Para un tamizaje, esto suele ser aceptable. El umbral se puede ajustar según el costo de un falso negativo frente a un falso positivo.
 
 **Variables más influyentes** (coeficientes de la regresión logística y permutación del gradient boosting):
 1. Edad y salud general (los dos métodos coinciden).

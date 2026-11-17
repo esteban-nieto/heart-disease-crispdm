@@ -1,3 +1,5 @@
+[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/esteban-nieto/heart-disease-crispdm/blob/main/notebooks/analisis_crispdm.ipynb)
+
 # Enfermedad cardiaca: factores de riesgo y modelos predictivos (CRISP-DM)
 
 Proyecto de ciencia de datos que estudia qué factores de salud y hábitos se asocian con infarto o enfermedad cardiaca, y qué tan bien se puede estimar ese riesgo con modelos predictivos. Sigue la metodología CRISP-DM en sus seis fases.
@@ -51,8 +53,7 @@ heart-disease-crispdm/
 │   ├── presentacion_resultados.pptx                    Diapositivas
 │   ├── *.csv                                           Tablas de métricas y análisis
 │   ├── figures/                                        Figuras 01 a 09
-│   ├── screenshots/                                    Pantallazos de terminal, notebook y Kaggle
-│   └── logs/                                           Salida completa de cada ejecución
+│   └── screenshots/                                    Pantallazos de terminal, notebook y Kaggle
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -64,14 +65,28 @@ El notebook crea `data/heart_disease.db` a partir del CSV original en la fase 2.
 
 ## Cómo reproducir el análisis
 
-Se recomienda Python 3.11 o superior. Desde la carpeta `notebooks/`:
+### Opción 1: Google Colab (recomendada)
+
+1. Haz clic en el botón **Abrir en Colab** de arriba.
+2. Ejecuta la primera celda de configuración. Clona el repositorio en `/content/heart-disease-crispdm`, incluido el CSV, e instala las dependencias.
+3. Ejecuta el resto de las celdas en orden (**Entorno de ejecución → Ejecutar todo**).
+
+La fase 3 tarda unos 30 minutos en Colab, sobre todo por SHAP.
+
+### Opción 2: local
+
+Se recomienda Python 3.11 o 3.12. Desde la raíz del repositorio:
 
 ```bash
 pip install -r requirements.txt
-jupyter notebook analisis_crispdm.ipynb
+jupyter notebook notebooks/analisis_crispdm.ipynb
 ```
 
-Ejecuta las celdas en orden. La fase 3 tarda unos 30 minutos, sobre todo por SHAP. Se usa una muestra de 300 registros para SHAP.
+Ejecuta las celdas en orden. La celda de configuración detecta si estás en Colab o en local y crea las carpetas `data/` y `reports/figures/` si no existen.
+
+Notas:
+- Las versiones de las librerías están fijadas en `requirements.txt` para que los resultados coincidan.
+- SHAP se calcula sobre una muestra de 300 registros de prueba, por costo computacional.
 
 ---
 

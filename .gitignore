@@ -7,9 +7,8 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
-# Derivados regenerables (se recrean con los scripts)
+# Derivado regenerable (lo crea el notebook en la fase 3)
 data/heart_disease.db
-
 
 # Sistema
 Thumbs.db

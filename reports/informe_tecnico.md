@@ -13,13 +13,13 @@
   ```
   heart-disease-crispdm/
   ├── data/               CSV original, base SQLite y datos limpios
-  ├── notebooks/          fases en scripts .py y notebooks .ipynb
-  ├── reports/            tablas CSV, figuras, logs, pantallazos, informes y presentación PDF
+  ├── notebooks/          análisis completo en un notebook (fases 1 a 4)
+  ├── reports/            tablas CSV, figuras, pantallazos, informes y presentación PDF
   ├── requirements.txt
   └── README.md
   ```
 - Semilla aleatoria fija: `random_state = 42` en la partición, la validación cruzada y los modelos.
-- Cada fase se ejecutó como script y su salida quedó en `reports/logs/`.
+- El análisis está en un solo notebook, `notebooks/analisis_crispdm.ipynb`, con las cuatro fases y sus salidas guardadas.
 - Advertencia sin efecto en resultados: joblib no pudo contar núcleos físicos y usó lógicos. Se fijó `LOKY_MAX_CPU_COUNT=4`.
 
 ---
@@ -104,7 +104,7 @@ Salida real de la fase 1 y 2:
 
 ## 3. Preparación de los datos
 
-Script: `notebooks/02_preparacion_y_base_de_datos.py` (notebook: `notebooks/02_preparacion_y_base_de_datos.ipynb`).
+Fase en `notebooks/analisis_crispdm.ipynb`.
 
 ### 3.1 Validación de calidad
 
@@ -149,7 +149,6 @@ No hubo codificación one-hot. Todas las categóricas del dataset ya vienen codi
 - Binarias (`Sex`, `HighBP`, etc.) quedan con 0/1.
 - Ordinales (`Age`, `GenHlth`, `Education`, `Income`, `Diabetes`) se conservan como enteros. Es una decisión deliberada: su orden tiene sentido (más edad, más riesgo) y el modelo puede aprovecharlo. Con one-hot se perdería esa información y se aumentaría la dimensión sin ganancia clara.
 
-Contraste con `health-lifestyle-crispdm`: allí sí se usó one-hot para `gender` y las categorías derivadas, porque eran texto sin orden.
 
 ### 3.5 Normalización (escalado)
 
@@ -186,7 +185,7 @@ Salida real de la fase 3:
 
 ## 4. Modelamiento
 
-Script: `notebooks/03_modelamiento_y_evaluacion.py`. El notebook `03_modelamiento_y_evaluacion.ipynb` está guardado con el código y sin ejecutar: esta fase tarda unos 30 minutos por SHAP, así que su salida real es la del log de ejecución en `reports/logs/03_modelamiento_y_evaluacion.log`.
+Fase en `notebooks/analisis_crispdm.ipynb`. Esta fase tarda unos 30 minutos por SHAP, así que sus salidas quedaron guardadas en el propio notebook.
 
 ### 4.1 Partición
 
@@ -206,7 +205,7 @@ Script: `notebooks/03_modelamiento_y_evaluacion.py`. El notebook `03_modelamient
 | Random Forest | 300 árboles, profundidad máxima 12, `min_samples_leaf=50`, `class_weight="balanced_subsample"` |
 | Gradient boosting | `HistGradientBoostingClassifier(class_weight="balanced")` |
 
-Random Forest y regresión logística son las dos familias que usa el repositorio de referencia. El gradient boosting se incluyó como comparación adicional.
+Regresión logística y Random Forest son las dos familias principales del análisis. El gradient boosting se incluyó como comparación adicional.
 
 **Manejo del desbalance:** `class_weight` pondera la clase positiva (10 %) en la función de pérdida, en lugar de remuestrear los datos, y así no altera la distribución real.
 
@@ -324,9 +323,9 @@ Con umbral 0,5, el modelo detecta cerca del 78–80 % de los casos reales, pero 
 
 ---
 
-## 5.7. Robustez, equidad y calibración
+## 5.8. Robustez, equidad y calibración
 
-Estos resultados vienen de `notebooks/06_robustez_y_equidad.py`, que reajusta los dos modelos principales con la misma partición de la fase 3.
+Estos resultados vienen de la fase complementaria de `notebooks/analisis_crispdm.ipynb`, que reajusta los dos modelos principales con la misma partición de la fase 3.
 
 **Intervalos de confianza (bootstrap, 1.000 remuestreos del conjunto de prueba, IC 95 %):**
 
@@ -371,13 +370,12 @@ Figura de calibración: `reports/figures/09_calibracion.png`.
 
 Entregables:
 
-- **Presentación ejecutiva en PDF:** `reports/presentacion_resultados.pdf` (12 páginas, horizontal).
+- **Presentación ejecutiva en PDF:** `reports/presentacion_resultados.pdf` (15 páginas, horizontal).
 - Informe técnico: `reports/informe_tecnico.md` (este archivo).
 - Informe ejecutivo en Markdown: `reports/resultados_crispdm.md`.
 - Tablas: `reports/metricas_*.csv`, `reports/asociacion_*.csv`, `reports/ganancia_por_decil_random_forest.csv`, `reports/importancia_shap_random_forest.csv`, `reports/coeficientes_regresion_logistica.csv`, `reports/importancia_permutacion_gb.csv`.
-- Figuras: `reports/figures/` (01 a 08).
-- Notebooks: `notebooks/01_comprension_y_eda.ipynb` y `notebooks/02_preparacion_y_base_de_datos.ipynb` (ejecutados), `notebooks/03_modelamiento_y_evaluacion.ipynb` (sin ejecutar; salida en logs).
-- Logs de ejecución: `reports/logs/`.
+- Figuras: `reports/figures/` (01 a 09).
+- Notebook: `notebooks/analisis_crispdm.ipynb` (ejecutado de principio a fin).
 - Pantallazos: `reports/screenshots/`.
 - Base de datos: `data/heart_disease.db`.
 
@@ -415,21 +413,18 @@ Entregables:
 | 1 | Descargar dataset desde la API pública de Kaggle | `curl` | CSV de 22,7 MB |
 | 2 | Crear estructura de carpetas | Bash | `data/`, `notebooks/`, `reports/` |
 | 3 | Perfilar datos (nulos, duplicados, rangos, correlaciones) | Python | consola |
-| 4 | Fase 1–2: EDA, pruebas estadísticas, figuras | `01_comprension_y_eda.py` | `reports/*.csv`, `figures/01–03` |
-| 5 | Fase 3: validación, limpieza, derivadas, SQLite | `02_preparacion_y_base_de_datos.py` | `data/heart_disease.db` |
-| 6 | Fase 4–5: CV, prueba, curvas de aprendizaje, SHAP, deciles, permutación | `03_modelamiento_y_evaluacion.py` | `reports/metricas_*.csv`, `figures/04–08` |
+| 4 | Fase 1–2: EDA, pruebas estadísticas, figuras | `notebooks/analisis_crispdm.ipynb` | `reports/*.csv`, `figures/01–03` |
+| 5 | Fase 3: validación, limpieza, derivadas, SQLite | `notebooks/analisis_crispdm.ipynb` | `data/heart_disease.db` |
+| 6 | Fase 4–5: CV, prueba, curvas de aprendizaje, SHAP, deciles, permutación | `notebooks/analisis_crispdm.ipynb` | `reports/metricas_*.csv`, `figures/04–08` |
 | 7 | Primera ejecución de SHAP con 2.000 registros: superó 900 s (código 124) | `03_…py` | sin figura 08 |
 | 8 | Reducir la muestra SHAP a 300 y re-ejecutar la fase completa | `03_…py` | log completo, `figures/08` |
-| 9 | Registrar salidas de cada paso | `> reports/logs/*.log` | `reports/logs/` |
-| 10 | Pantallazos del terminal renderizados a partir de los logs | Python + matplotlib | `reports/screenshots/terminal_*.png` |
+| 10 | Pantallazos del terminal renderizados a partir de la salida del notebook | Python + matplotlib | `reports/screenshots/terminal_*.png` |
 | 11 | Captura de la página del dataset en Kaggle | navegador de prueba | `reports/screenshots/06_kaggle_pagina_dataset.png` |
-| 12 | Convertir fases a notebooks `.ipynb` (1, 2 y 3 ejecutados) | `_convertir_a_ipynb.py` | `notebooks/*.ipynb` |
-| 13 | Generar la presentación ejecutiva en PDF | `04_presentacion_pdf.py` | `reports/presentacion_resultados.pdf` |
+| 13 | Generar la presentación ejecutiva en PDF | `notebooks/analisis_crispdm.ipynb` | `reports/presentacion_resultados.pdf` |
 | 14 | Redactar el informe técnico | Markdown | este archivo |
-| 15 | Robustez y equidad: IC bootstrap, métricas por subgrupo, calibración | `06_robustez_y_equidad.py` | `reports/intervalos_confianza_bootstrap.csv`, `metricas_por_subgrupo.csv`, `calibracion_brier.csv`, `figures/09` |
-| 16 | Registrar salida de la fase 6 y pantallazo | `> reports/logs/06_*.log` | `reports/screenshots/terminal_06_*.png` |
+| 15 | Robustez y equidad: IC bootstrap, métricas por subgrupo, calibración | `notebooks/analisis_crispdm.ipynb` | `reports/intervalos_confianza_bootstrap.csv`, `metricas_por_subgrupo.csv`, `calibracion_brier.csv`, `figures/09` |
 | 17 | Ejecutar el notebook de la fase 3 para guardar sus salidas | `nbclient` | `notebooks/03_modelamiento_y_evaluacion.ipynb` |
-| 18 | Incluir la fase 6 (robustez, equidad, calibración) en el PDF de 15 páginas | `04_presentacion_pdf.py` | `reports/presentacion_resultados.pdf` |
-| 19 | Generar diapositivas en PowerPoint | `07_diapositivas_pptx.py` | `reports/presentacion_resultados.pptx` |
+| 18 | Incluir la fase 6 (robustez, equidad, calibración) en el PDF de 15 páginas | `notebooks/analisis_crispdm.ipynb` | `reports/presentacion_resultados.pdf` |
+| 19 | Generar diapositivas en PowerPoint | `notebooks/analisis_crispdm.ipynb` | `reports/presentacion_resultados.pptx` |
 
 **Sobre la captura del escritorio:** se tomó una captura completa del escritorio, pero se descartó porque mostraba conversaciones y datos ajenos al proyecto. No se incluye.
