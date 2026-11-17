@@ -43,14 +43,7 @@ heart-disease-crispdm/
 ├── data/
 │   └── heart_disease_health_indicators_BRFSS2015.csv   Dato original (22,7 MB)
 ├── notebooks/
-│   ├── 01_comprension_y_eda.py / .ipynb                Fases 1 y 2: negocio, datos, EDA
-│   ├── 02_preparacion_y_base_de_datos.py / .ipynb      Fase 3: validación, limpieza, SQLite
-│   ├── 03_modelamiento_y_evaluacion.py / .ipynb        Fases 4 y 5: modelos, SHAP, deciles
-│   ├── 04_presentacion_pdf.py                          Genera el PDF de presentación
-│   ├── 05_formato_excel_y_word.py                      Reformatea CSV para Excel y genera Word
-│   ├── 06_robustez_y_equidad.py / .ipynb               Complemento: bootstrap, equidad, calibración
-│   ├── 07_diapositivas_pptx.py                         Genera las diapositivas
-│   └── _convertir_a_ipynb.py                           Convierte los scripts en notebooks
+│   └── analisis_crispdm.ipynb                          Análisis completo: fases 1 a 4
 ├── reports/
 │   ├── informe_tecnico.md / .docx                      Informe técnico paso a paso
 │   ├── resultados_crispdm.md / .docx                   Resumen ejecutivo
@@ -65,30 +58,20 @@ heart-disease-crispdm/
 └── README.md
 ```
 
-La base de datos `data/heart_disease.db` no está en el repositorio: la crea el script 02 a partir del CSV original.
+El notebook crea `data/heart_disease.db` a partir del CSV original en la fase 2. Esa base no está en el repositorio.
 
 ---
 
 ## Cómo reproducir el análisis
 
-Se recomienda Python 3.11 o superior. Desde la raíz de esta carpeta:
+Se recomienda Python 3.11 o superior. Desde la carpeta `notebooks/`:
 
 ```bash
 pip install -r requirements.txt
-python notebooks/01_comprension_y_eda.py
-python notebooks/02_preparacion_y_base_de_datos.py
-python notebooks/03_modelamiento_y_evaluacion.py
-python notebooks/06_robustez_y_equidad.py
-python notebooks/04_presentacion_pdf.py
-python notebooks/05_formato_excel_y_word.py
-python notebooks/07_diapositivas_pptx.py
+jupyter notebook analisis_crispdm.ipynb
 ```
 
-Notas:
-- El script 03 tarda unos 30 minutos, sobre todo por SHAP. Se usa una muestra de 300 registros para SHAP.
-- El script 04 necesita que existan las tablas de las fases 5 y 6. El orden anterior ya lo respeta.
-- El script 05 reescribe los CSV en formato `;` y decimal `,` para Excel en configuración española, y convierte los Markdown a Word. Debe ejecutarse después de los demás, y no mientras el Word esté abierto.
-- Para regenerar los notebooks: `python notebooks/_convertir_a_ipynb.py 01_comprension_y_eda 02_preparacion_y_base_de_datos 06_robustez_y_equidad`. El notebook 03 se ejecuta aparte, porque tarda y ya tiene sus salidas guardadas.
+Ejecuta las celdas en orden. La fase 3 tarda unos 30 minutos, sobre todo por SHAP. Se usa una muestra de 300 registros para SHAP.
 
 ---
 
